@@ -4,6 +4,8 @@ import requests
 import textwrap
 import random
 from PIL import Image, ImageFont, ImageDraw
+import pkg_resources
+from io import BytesIO
 
 from dinky.layouts.layout_configuration import Zone
 
@@ -32,9 +34,14 @@ class DinkyOnThisDayPlugin:
         text = "\n".join([wrapper.fill(f"{event['year']}: {event['text']}") for event in events])
         im = Image.new('RGB', (zone.width, zone.height), (255, 255, 255))
         draw = ImageDraw.Draw(im)
-        fnt_header = ImageFont.truetype("arial.ttf", 36)
-        fnt_regular = ImageFont.truetype("arial.ttf", 14)
+
+        font_data = pkg_resources.resource_stream('dinky_onthisday', 'fonts/Roboto-Regular.ttf')
+        font_bytes = BytesIO(font_data.read())
+        font_header = ImageFont.truetype(font_bytes, 36)
+        font_bytes.seek(0)
+        font_regular = ImageFont.truetype(font_bytes, 14)
+
         draw.rectangle((zone.padding, zone.padding, zone.width-zone.padding, zone.padding + 55), fill=self.primary_color)
-        draw.text((zone.padding + 5, zone.padding + 5), "On This Day", font=fnt_header, fill="white")
-        draw.multiline_text((zone.padding + 5, zone.padding + 5 + 55), text, font=fnt_regular, fill="black")
+        draw.text((zone.padding + 5, zone.padding + 5), "On This Day", font=font_header, fill="white")
+        draw.multiline_text((zone.padding + 5, zone.padding + 5 + 55), text, font=font_regular, fill="black")
         return im
