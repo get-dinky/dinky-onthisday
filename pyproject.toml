@@ -1,6 +1,6 @@
 [project]
 name = "dinky-onthisday"
-version = "0.1.2"
+version = "0.2"
 description = "What happened on this day widget for the dinky dashboard"
 readme = "README.md"
 requires-python = ">=3.8"
